@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 
+import ipaddress
 import requests
 import os
 import sys
@@ -8,6 +9,16 @@ import time
 load_dotenv('API_KEYS.env')
 VT_URL = "https://www.virustotal.com/vtapi/v2/ip-address/report"
 IPDB_URL = "https://api.abuseipdb.com/api/v2/check"
+
+def is_valid_ip(ip):
+    try:
+        ipaddress.ip_address(ip)
+        # # Test for confirmation
+        # print(f"{ip} is a valid IP")
+        return True
+    except ValueError:
+        print(f"{ip} is NOT a valid IP")
+        sys.exit(1)
 
 def check_ip_virustotal(ip):
     api_key = os.getenv('VIRUSTOTAL_API_KEY')
@@ -59,9 +70,13 @@ def check_ip_abuseipdb(ip):
 
 def main():
     ip = input("Enter IP address to check: ")
+    # Checks for valid input
+    is_valid_ip(ip)
     # Will call the API's and return results
-    check_ip_virustotal(ip)
+    print("\n--- AbuseIPDB Results ---")
     check_ip_abuseipdb(ip)
+    print("\n--- VirusTotal Results ---")
+    check_ip_virustotal(ip)
 
 if __name__ == "__main__":
     main()
