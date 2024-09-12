@@ -7,12 +7,13 @@ import time
 
 load_dotenv('API_KEYS.env')
 VT_URL = "https://www.virustotal.com/vtapi/v2/ip-address/report"
+IPDB_URL = "https://api.abuseipdb.com/api/v2/check"
 
 def check_ip_virustotal(ip):
     api_key = os.getenv('VIRUSTOTAL_API_KEY')
     # Test api_key injestion
     # print(f"{api_key}")
-    # Queries VirusTotal API to check the status of the hash.
+    # Queries VirusTotal API to check the status of the IP.
     params = {'apikey': api_key, 'ip': ip}
 
     response = requests.get(VT_URL, params=params)
@@ -32,7 +33,29 @@ def check_ip_virustotal(ip):
         print(f"Error: {response.status_code}")
 
 def check_ip_abuseipdb(ip):
-    pass # Function to be implemented
+    api_key = os.getenv('ABUSEIPDB_API_KEY')
+    # Test api_key injestion
+    # print(f"{api_key}")
+    # Queries AbuseIPDB API to check the status of the IP.
+    headers = {
+        'Accept': 'applications/json',
+        'Key': api_key
+    }
+    params = {'ipAddress': ip, 'maxAgeInDays': 90}
+
+    response = requests.get(IPDB_URL, headers=headers, params=params)
+
+    if response.status_code == 200:
+        result = response.json()
+        if result['data']['abuseConfidenceScore'] > 0:
+            print(f"IP {ip} found in AbuseIPDB with an Abuse Confidence Score of {result['data']['abuseConfidenceScore']}")
+        else:
+            print(f"No malicious activity found for IP {ip} on AbuseIPDB.")
+    elif response.status_code == 204 or response.status_code == 429:
+        print("Rate limit exceeded for AbuseIPDB API.")
+        sys.exit(1)
+    else:
+        print(f"Error: {response.status_code}")
 
 def main():
     ip = input("Enter IP address to check: ")
