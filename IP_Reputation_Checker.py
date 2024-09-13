@@ -24,7 +24,7 @@ def is_valid_ip(ip):
 
 def check_ip_virustotal(ip):
     api_key = os.getenv('VIRUSTOTAL_API_KEY')
-    # Test api_key injestion
+    # Test api_key ingestion
     # print(f"{api_key}")
     # Queries VirusTotal API to check the status of the IP.
     params = {'apikey': api_key, 'ip': ip}
@@ -48,7 +48,7 @@ def check_ip_virustotal(ip):
 
 def check_ip_abuseipdb(ip):
     api_key = os.getenv('ABUSEIPDB_API_KEY')
-    # Test api_key injestion
+    # Test api_key ingestion
     # print(f"{api_key}")
     # Queries AbuseIPDB API to check the status of the IP.
     headers = {
