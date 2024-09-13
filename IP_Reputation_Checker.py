@@ -72,16 +72,36 @@ def check_ip_abuseipdb(ip):
         print(f"Error: {response.status_code}")
 
 
+def check_ips_from_file(filename):
+    """Reads a list of hashes from a file and checks them in VirusTotal."""
+    with open(filename, 'r') as file:
+        ips = [line.strip() for line in file]
+
+    for ip in ips:
+        # Checks for valid input
+        is_valid_ip(ip)
+        # Will call the API's and return results
+        # AbuseIPDB
+        print("\n--- AbuseIPDB Results ---")
+        check_ip_abuseipdb(ip)
+        # Virustotal
+        print("\n--- VirusTotal Results ---")
+        check_ip_virustotal(ip)
+
+
 def main():
     ip = input("Enter IP address to check: ")
-    # Checks for valid input
-    is_valid_ip(ip)
+    # Loads IPs from file
+    check_ips_from_file('ips.txt')
     # Will call the API's and return results
+    # AbuseIPDB
     print("\n--- AbuseIPDB Results ---")
     check_ip_abuseipdb(ip)
+    # Virustotal
     print("\n--- VirusTotal Results ---")
     check_ip_virustotal(ip)
 
 
 if __name__ == "__main__":
-    main()
+    # Loads IPs from file
+    check_ips_from_file('ips.txt')
